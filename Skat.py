@@ -4,17 +4,20 @@ from random import randint
 
 class Card:
 
+    #init-Funktion. Legt eine Karte in der übergebenen Farbe mit dem übergebenen Wert an
     def __init__(self,farbe,wert):
         self.__farbe = farbe
         self.__wert = wert
 
-
+    #Gibt die Farbe der Karte zurück
     def farbe(self):
         return self.__farbe
 
+    #Gibt den Wert der Karte zurück
     def wert(self):
         return self.__wert
 
+    #Gibt den Reizwert der Karte zurück
     def reizwert(self):
         if self.__farbe == "Karo":
             return 9
@@ -36,7 +39,7 @@ class Card:
             "Dame":3,
             "König":4,
             "As":11
-        }
+        }.get(wert)
 
     def zaehlwert(self):
         return Card.__getzw(self.__wert)
