@@ -83,6 +83,7 @@ class CardSet():
 my_cards = CardSet(True)
 my_cards.shuffle()
 decks = my_cards.deal()
+#this is a commit test
 print(decks[0].show()[0].zaehlwert())
 
 
