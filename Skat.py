@@ -1,5 +1,4 @@
-farben = ["Kreuz","Pik","Herz","Karo"]
-werte = ["7","8","9","10","Bube","Dame","König","As"]
+
 from random import randint
 
 class Card:
@@ -49,10 +48,10 @@ class CardSet():
 
     def __init__(self, full_deck = False):
         self.__cards=[]
+        farben = ["Kreuz","Pik","Herz","Karo"]
+        werte = ["7","8","9","10","Bube","Dame","König","As"]
         if full_deck:
-            for farbe in farben:
-                for wert in werte:
-                    self.__cards.append(Card(farbe, wert))
+            self.__cards = [Card(c,v) for c in farben for v in werte]
 
     def shuffle(self):
         self.__cards.sort(key=lambda zufall: randint(0,1000))
