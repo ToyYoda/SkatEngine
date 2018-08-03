@@ -43,6 +43,13 @@ class Card:
     def zaehlwert(self):
         return Card.__getzw(self.__wert)
 
+    def __str__(self):
+        return self.__farbe + str(self.__wert)
+
+    def __repr__(self):
+        return self.__str__()
+
+
 class CardSet():
 
 
@@ -79,12 +86,42 @@ class CardSet():
 
         return stacks
 
+    def __str__(self):
+        return str(self.__cards)
 
-my_cards = CardSet(True)
-my_cards.shuffle()
-decks = my_cards.deal()
+    def __repr__(self):
+        return __str__()
+
+class Player():
+    def __init__(self,name):
+        self.name = name
+        self.hand = []
+
+
+
+
+class Game():
+    def __init__(self):
+        self.cards = CardSet(True)
+        self.cards.shuffle()
+        print("Please enter name for Player 1:")
+        self.p1 = Player(input().rstrip())
+        print("Please enter name for Player 2:")
+        self.p2 = Player(input().rstrip())
+        print("Please enter name for Player 3:")
+        self.p3 = Player(input().rstrip())
+        self.p1.hand, self.p2.hand, self.p3.hand, self.skat = self.cards.deal()
+
+    def showhands(self):
+        print(self.p1.name + ": " + str(self.p1.hand.show()))
+        print(self.p2.name + ": " + str(self.p2.hand.show()))
+        print(self.p3.name + ": " + str(self.p3.hand.show()))
+        print("Skat:" + str(self.skat.show()))
+
+game = Game()
+game.showhands()
 #this is a commit test
-print(decks[0].show()[0].zaehlwert())
+#print(decks[0].show()[0].zaehlwert())
 
 
 
