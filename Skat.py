@@ -106,6 +106,22 @@ class Player():
         self.hand = []
 
 
+class Game_variant():
+    def __init__(self,hand = False, schneider = False, schwarz = False, ouvert = False):
+        self.hand = hand
+        self.schneider = schneider
+        self.schwarz = schwarz
+        self.ouvert = ouvert
+
+class Game_variant_null(Game_variant):
+    def __init__(self, hand = False, schneider = False, schwarz = False, ouvert = False):
+        super().__init__(hand, schneider, schwarz, ouvert)
+
+    def playable_cards(startcard, stack):
+        if startcard.farbe() in [card.farbe() for card in stack]:
+            #gib alle Karten in einem cardstack zurück, die die gleiche Farbei wie startcard haben
+            #sonst gib den ganzen stack zurück. Wenn man nicht bedienen kann, kann man alles spielen
+
 
 
 class Game():
@@ -128,8 +144,7 @@ class Game():
 
 game = Game()
 game.showhands()
-#this is a commit test
-#print(decks[0].show()[0].zaehlwert())
+
 
 
 
