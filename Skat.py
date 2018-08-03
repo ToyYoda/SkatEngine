@@ -44,7 +44,15 @@ class Card:
         return Card.__getzw(self.__wert)
 
     def __str__(self):
-        return self.__farbe + str(self.__wert)
+        if self.__farbe == "Karo":
+            farbe = "\u2666"
+        elif self.__farbe == "Herz":
+            farbe = "\u2665"
+        elif self.__farbe == "Pik":
+            farbe = "\u2660"
+        elif self.__farbe == "Kreuz":
+            farbe = "\u2663"
+        return farbe + str(self.__wert)
 
     def __repr__(self):
         return self.__str__()
@@ -90,7 +98,7 @@ class CardSet():
         return str(self.__cards)
 
     def __repr__(self):
-        return __str__()
+        return self.__str__()
 
 class Player():
     def __init__(self,name):
