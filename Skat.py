@@ -189,7 +189,7 @@ class Game():
         stacks = self.cards.deal()
         for i in range(len(self.players)):
             self.players[i].hand = CardSet(stacks[i])
-        self.skat = Cardset(stacks[len(self.players)])
+        self.skat = CardSet(stacks[len(self.players)])
         self.reindex = 0
 
     def getStartPlayer(self):
@@ -202,9 +202,9 @@ class Game():
 
 
     def showhands(self):
-        print(self.p1.name + ": " + str(self.p1.hand.show()))
-        print(self.p2.name + ": " + str(self.p2.hand.show()))
-        print(self.p3.name + ": " + str(self.p3.hand.show()))
+        for player in self.players:
+            #TODO: an Playerarray anpassen
+            print(player.name + ": " + str(player.hand.show()))
         print("Skat:" + str(self.skat.show()))
 
 game = Game()
