@@ -61,8 +61,8 @@ class Card:
 class CardSet():
 
 
-    def __init__(self, full_deck = False):
-        self.__cards=[]
+    def __init__(self, cardlist = [], full_deck = False):
+        self.__cards = cardlist
         farben = ["Kreuz","Pik","Herz","Karo"]
         werte = ["7","8","9","10","Bube","Dame","König","As"]
         if full_deck:
@@ -74,8 +74,11 @@ class CardSet():
     def show(self):
         return self.__cards
 
-    def add(self,card):
-        self.__cards.append(card)
+    def cards(self):
+        return self.__cards
+
+    def add(self,cards):
+        self.__cards += cards.show()
 
     def give(self):
         return self.__cards.pop()
@@ -85,12 +88,17 @@ class CardSet():
             raise ValueError("Es kann nur ein vollständiges Deck ausgeteilt werden")
         stacks = []
         for i in range(0,3):
-            stacks.append(CardSet(False))
+            cardlist = []
             for j in range(0,10):
-                stacks[i].add(self.__cards.pop())
-        stacks.append(CardSet())
-        stacks[3].add(self.give())
-        stacks[3].add(self.give())
+                #print(cardlist)
+                #print(self.__cards)
+                cardlist.append(self.__cards.pop())
+            stacks.append(CardSet(cardlist, False))
+                #stacks[i].add(CardSet[self.__cards.pop()])
+
+        skat = CardSet([self.give()])
+        skat.add(CardSet([self.give()]))
+        stacks.append(skat)
 
         return stacks
 
@@ -103,7 +111,8 @@ class CardSet():
 class Player():
     def __init__(self,name):
         self.name = name
-        self.hand = []
+        self.hand = CardSet()
+        self.stack = CardSet()
 
 
 class Game_variant():
@@ -117,24 +126,49 @@ class Game_variant_null(Game_variant):
     def __init__(self, hand = False, schneider = False, schwarz = False, ouvert = False):
         super().__init__(hand, schneider, schwarz, ouvert)
 
-    def playable_cards(startcard, stack):
-        if startcard.farbe() in [card.farbe() for card in stack]:
+    def playable_cards(startcard, player):
+        if startcard.farbe() in [card.farbe() for card in player.hand]:
+            returndeck = CardSet()
+            returndeck.add([card for card in player.hand if card.farbe() == startcard.farbe()])
+            return returndeck
+        else:
+            return player.hand
             #gib alle Karten in einem cardstack zurück, die die gleiche Farbei wie startcard haben
             #sonst gib den ganzen stack zurück. Wenn man nicht bedienen kann, kann man alles spielen
+
+    def finish_stich(self, stich):
+        farbe = stich.cards()[0].farbe
+        valueorder = ["7", "8", "9", "10", "Bube", "Dame", "König", "As"]
+        maxvalue = valueorder.index(stich.cards()[0].wert())
+        winner = stich[0]
+        for card in stich:
+            if valueorder.index(card.wert()) > maxvalue:
+                winner = card
+        #TODO: Sticht dem Gewinner zuordnen. In den Stack
+
 
 
 
 class Game():
     def __init__(self):
-        self.cards = CardSet(True)
+        self.cards = CardSet(full_deck = True)
         self.cards.shuffle()
-        print("Please enter name for Player 1:")
-        self.p1 = Player(input().rstrip())
-        print("Please enter name for Player 2:")
-        self.p2 = Player(input().rstrip())
-        print("Please enter name for Player 3:")
-        self.p3 = Player(input().rstrip())
-        self.p1.hand, self.p2.hand, self.p3.hand, self.skat = self.cards.deal()
+        self.skat = CardSet()
+        #print("Please enter name for Player 1:")
+        #self.p1 = Player(input().rstrip())
+        #print("Please enter name for Player 2:")
+        #self.p2 = Player(input().rstrip())
+        #print("Please enter name for Player 3:")
+        #self.p3 = Player(input().rstrip())
+        self.p1 = Player("a")
+        self.p2 = Player("b")
+        self.p3 = Player("c")
+        stacks = self.cards.deal()
+        self.p1.hand = CardSet(stacks[0])
+        self.p2.hand = CardSet(stacks[1])
+        self.p3.hand = CardSet(stacks[2])
+        self.skat = CardSet(stacks[3])
+
 
     def showhands(self):
         print(self.p1.name + ": " + str(self.p1.hand.show()))
@@ -144,11 +178,3 @@ class Game():
 
 game = Game()
 game.showhands()
-
-
-
-
-
-
-
-
