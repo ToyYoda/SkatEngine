@@ -108,6 +108,15 @@ class CardSet():
     def __repr__(self):
         return self.__str__()
 
+    def getValue(self):
+        ret = 0
+        for card in self.__cards:
+            ret += card.zaehlwert()
+        return ret
+
+    def is_empty(self):
+        return len(self.__cards) == 0
+
 class Player():
     def __init__(self,name):
         self.name = name
@@ -116,20 +125,21 @@ class Player():
 
 
 class Game_variant():
-    def __init__(self,hand = False, schneider = False, schwarz = False, ouvert = False):
+    def __init__(self,game,hand = False, schneider = False, schwarz = False, ouvert = False):
         self.hand = hand
         self.schneider = schneider
         self.schwarz = schwarz
         self.ouvert = ouvert
+        self.game = game
 
 class Game_variant_null(Game_variant):
-    def __init__(self, hand = False, schneider = False, schwarz = False, ouvert = False):
-        super().__init__(hand, schneider, schwarz, ouvert)
+    def __init__(self, game, hand = False, schneider = False, schwarz = False, ouvert = False):
+        super().__init__(game, hand, schneider, schwarz, ouvert)
 
     def playable_cards(startcard, player):
         if startcard.farbe() in [card.farbe() for card in player.hand]:
             returndeck = CardSet()
-            returndeck.add([card for card in player.hand if card.farbe() == startcard.farbe()])
+            returndeck.add(CardSet([card for card in player.hand if card.farbe() == startcard.farbe()]))
             return returndeck
         else:
             return player.hand
@@ -144,7 +154,21 @@ class Game_variant_null(Game_variant):
         for card in stich:
             if valueorder.index(card.wert()) > maxvalue:
                 winner = card
-        #TODO: Sticht dem Gewinner zuordnen. In den Stack
+        #Spielernummer des Gewinners herausfinden
+        winnerindex = (self.game.getStartPlayer() + stich.index(winner)) % 3
+        self.game.players[winnerindex].stack.add(stich)
+        #Sieger spielt auf
+        self.game.setStartPlayer(winnerindex)
+        if winnerindex == game.reindex:
+            self.finish_game()
+
+
+    def finish_game(self):
+        if self.game.players[self.game.reindex].stack.isempty():
+            won = True
+        else:
+            won = False
+        #TODO: Tupel zurückliefern in dem steht, wer wie viele Punkte bekommt
 
 
 
@@ -160,14 +184,21 @@ class Game():
         #self.p2 = Player(input().rstrip())
         #print("Please enter name for Player 3:")
         #self.p3 = Player(input().rstrip())
-        self.p1 = Player("a")
-        self.p2 = Player("b")
-        self.p3 = Player("c")
+        self.players = [Player("a"),Player("b"),Player("c")]
+        self.startPlayer = 0
         stacks = self.cards.deal()
-        self.p1.hand = CardSet(stacks[0])
-        self.p2.hand = CardSet(stacks[1])
-        self.p3.hand = CardSet(stacks[2])
-        self.skat = CardSet(stacks[3])
+        for i in range(len(self.players)):
+            self.players[i].hand = CardSet(stacks[i])
+        self.skat = Cardset(stacks[len(self.players)])
+        self.reindex = 0
+
+    def getStartPlayer(self):
+        return self.startPlayer
+
+    def setStartPlayer(self, startplayerindex):
+        self.startPlayer = startplayerindex
+
+
 
 
     def showhands(self):
